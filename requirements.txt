@@ -1,0 +1,6 @@
+apify-client
+elasticsearch
+openai
+streamlit
+python-dotenv
+requests
