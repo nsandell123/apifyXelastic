@@ -9,10 +9,19 @@ import requests
 
 load_dotenv()
 
-openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-apify = ApifyClient(os.getenv("APIFY_API_TOKEN"))
-es = Elasticsearch(os.getenv("ELASTICSEARCH_URL"), api_key=os.getenv("ELASTICSEARCH_API_KEY"))
-GOOGLE_API_KEY = os.getenv("GOOGLE_PLACES_API_KEY")
+
+def get_secret(key: str) -> str:
+    """Read from Streamlit secrets (cloud) or .env (local)."""
+    try:
+        return st.secrets[key]
+    except (KeyError, FileNotFoundError):
+        return os.getenv(key)
+
+
+openai_client = OpenAI(api_key=get_secret("OPENAI_API_KEY"))
+apify = ApifyClient(get_secret("APIFY_API_TOKEN"))
+es = Elasticsearch(get_secret("ELASTICSEARCH_URL"), api_key=get_secret("ELASTICSEARCH_API_KEY"))
+GOOGLE_API_KEY = get_secret("GOOGLE_PLACES_API_KEY")
 INDEX_NAME = "restaurant-reviews"
 
 MAPPING = {
